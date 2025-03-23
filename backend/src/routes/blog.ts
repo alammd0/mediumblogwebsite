@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { verify } from "hono/jwt";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import { createPostInput, updatePostInput } from "@mkadevs/common";
 
 type jwtPayload = {
     id: string
@@ -46,6 +47,16 @@ blogRouter.post("/create-post", async (c) => {
     try {
 
         const body = await c.req.json();
+
+        const { success } = createPostInput.safeParse(body);
+
+        if (!success) {
+            return c.json({
+                message: "Invalid input",
+                error: createPostInput.safeParse(body).error
+            }, 401)
+        }
+
         const autherId = c.get("userId");
         const blog = await prisma.post.create({
             data: {
@@ -77,16 +88,26 @@ blogRouter.put("/update-post", async (c) => {
     try {
 
         const body = await c.req.json();
+        const { success } = updatePostInput.safeParse(body);
+
+        if (!success) {
+            return c.json({
+                message: "Invalid input",
+                error: createPostInput.safeParse(body).error
+            }, 401)
+        }
+
         const autherId = c.get("userId");
         const blog = await prisma.post.update({
             where: {
-                id: body.id
+                id: body.id,
+                authorId: Number(autherId)
+
             },
 
             data: {
                 title: body.title,
                 content: body.content,
-                authorId: Number(autherId)
             }
         })
 
@@ -139,11 +160,11 @@ blogRouter.get("/single-post/:id", async (c) => {
         })
 
         return c.json({
-            message : "Fetched blog by autherId",
-            data : blog
+            message: "Fetched blog by autherId",
+            data: blog
         })
     }
-    catch(err){
-        message : "Error while feching blog"
+    catch (err) {
+        message: "Error while feching blog"
     }
 })
