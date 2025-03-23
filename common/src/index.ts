@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // signup inpput 
 export const signupInput = z.object({
-    username: z.string().min(8).max(20),
+    username: z.string(),
     email: z.string().email(),
     name: z.string().optional(),
     password: z.string().min(6).max(20),
