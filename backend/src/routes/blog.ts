@@ -6,6 +6,7 @@ import { createPostInput, updatePostInput } from "@mkadevs/common";
 
 type jwtPayload = {
     id: string
+    date: number
 }
 
 export const blogRouter = new Hono<{
@@ -15,7 +16,6 @@ export const blogRouter = new Hono<{
     },
     Variables: {
         userId: string,
-
     }
 }>();
 
@@ -130,7 +130,19 @@ blogRouter.get("/all-post", async (c) => {
     }).$extends(withAccelerate());
 
     try {
-        const blogs = await prisma.post.findMany({})
+        const blogs = await prisma.post.findMany({
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                date: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        })
         return c.json({
             message: "All blogs",
             data: blogs
@@ -156,6 +168,18 @@ blogRouter.get("/single-post/:id", async (c) => {
         const blog = await prisma.post.findFirst({
             where: {
                 id: Number(id)
+            },
+            
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                date: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         })
 

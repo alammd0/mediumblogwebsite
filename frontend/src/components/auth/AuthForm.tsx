@@ -38,15 +38,11 @@ const AuthForm = ({ type }: AuthFormProps) => {
 
             dispatch(setUser(response.data.data));
 
-
-
             console.log(jwt)
-            localStorage.setItem("token", jwt)
             dispatch(setToken(jwt));
 
             dispatch(setLoading(false));
             navigate("/blogs")
-
         }
         catch (err) {
             console.log(err)

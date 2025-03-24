@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../slice/AuthSlice";
+import blogReducer from "../slice/BlogSlice"
 
 
 const loadState = () => {
@@ -28,6 +29,7 @@ const store = configureStore({
     reducer: {
         // @ts-ignore
         auth: authReducer,
+        blog: blogReducer
     },
     preloadedState: loadState(),
 });

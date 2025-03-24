@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
-import { RootState } from "../redux/app";
+import { Link, useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../redux/app";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/slice/AuthSlice";
+import { setToken } from "../redux/slice/AuthSlice";
 
 
 const Navbar = () => {
@@ -8,6 +11,21 @@ const Navbar = () => {
     const { user, token } = useSelector((state: RootState) => state.auth);
     console.log("User Here Before Set Data : ", user);
     console.log("Token Here Before Set Data : ", token);
+
+    const navigate = useNavigate();
+    const dispatch : AppDispatch = useDispatch();
+
+    function logoutHandler() {
+        
+        localStorage.clear();
+
+        dispatch(setUser(null));
+
+        dispatch(setToken("")); 
+        
+        navigate("/signin");
+      }
+      
 
     return (
         <div className=" bg-slate-500 py-4">
@@ -35,8 +53,8 @@ const Navbar = () => {
                                     </span>
                                 </div>
                             </button>
-                            <button className=" bg-slate-400 px-4 py-2 rounded-2xl text-sm font-bold text-center flex uppercase">
-                                Logout
+                            <button onClick={logoutHandler} className=" bg-slate-400 px-4 py-2 rounded-2xl text-sm font-bold text-center flex uppercase">
+                                <Link to="/signin">Logout</Link>
                             </button>
                         </div>)
                     }

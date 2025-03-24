@@ -40,8 +40,12 @@ userRouter.post("/signup", async (c) => {
             }
         });
 
+
+        const expireTime = Math.floor(Date.now() / 1000) + (60 * 60);
+
         const token = await sign({
-            id: user.id
+            id: user.id,
+            exp : expireTime,
         }, c.env.JWT_SECRET)
 
 
@@ -94,8 +98,11 @@ userRouter.post("/signin", async (c) => {
             }, 403)
         }
 
+        const expireTime = Math.floor(Date.now() / 1000) + (60 * 60);
+
         const token = await sign({
-            id: user.id
+            id: user.id,
+            exp : expireTime,
         }, c.env.JWT_SECRET)
 
 

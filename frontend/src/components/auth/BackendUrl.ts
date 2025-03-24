@@ -1,1 +1,1 @@
-export const BackendUrl = "http://127.0.0.1:8787"
+export const BackendUrl = "https://mediumblog.mdkhalidalam001.workers.dev";

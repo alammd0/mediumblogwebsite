@@ -1,6 +1,7 @@
 import { MdOutlineNoteAdd } from "react-icons/md";
 import { IoRemoveCircleOutline } from "react-icons/io5";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { formatDate } from "../../utils/dateFormatter";
 
 interface BlogsCartProps {
     name: string,
@@ -23,7 +24,7 @@ const BlogsCart = ({ name, title, content, date }: BlogsCartProps) => {
                     </div>
                     <div className=" bg-slate-500 h-1 w-1 rounded-full"></div>
                     <div className="text-sm font-normal text-slate-600">
-                        {date}
+                        {formatDate(date)}
                     </div>
                 </div>
 
