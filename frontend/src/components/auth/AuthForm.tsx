@@ -3,12 +3,18 @@ import { useState } from "react";
 import { SignupInput } from "@mkadevs/common";
 import axios from "axios";
 import { BackendUrl } from "./BackendUrl";
+import { AppDispatch } from "../../redux/app";
+import { useDispatch } from "react-redux";
+import { setLoading, setToken, setUser } from "../../redux/slice/AuthSlice";
 
 interface AuthFormProps {
     type: "signup" | "signin";
 }
 
 const AuthForm = ({ type }: AuthFormProps) => {
+
+    const dispatch: AppDispatch = useDispatch();
+    
     const [formData, setFormData] = useState<SignupInput>({
         username: "",
         email: "",
@@ -19,22 +25,32 @@ const AuthForm = ({ type }: AuthFormProps) => {
 
     const isSignup = type === "signup";
 
-     async function submitRequest(){
-        try{
-            const response = await axios.post( `${BackendUrl}/api/v1/user/${isSignup ? "signup" : "signin"}`, formData)
 
-            console.log(response.data);
+    async function submitRequest() {
+        try {
 
-            const jwt = response.data.token
 
-            console.log(jwt);
+            dispatch(setLoading(true));
 
+            const response = await axios.post(`${BackendUrl}/api/v1/user/${isSignup ? "signup" : "signin"}`, formData)
+            const jwt = response.data.jwt
+            console.log(response.data.data);
+
+            dispatch(setUser(response.data.data));
+
+
+
+            console.log(jwt)
             localStorage.setItem("token", jwt)
-            navigate("/blog")
+            dispatch(setToken(jwt));
+
+            dispatch(setLoading(false));
+            navigate("/blogs")
+
         }
-        catch(err){
+        catch (err) {
             console.log(err)
-        } 
+        }
     }
 
     return (
@@ -61,6 +77,15 @@ const AuthForm = ({ type }: AuthFormProps) => {
                         label="Username"
                         placeholder="username"
                         onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                        type="text"
+                    />
+                )}
+
+                {isSignup && (
+                    <LabelInput
+                        label="name"
+                        placeholder="name"
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         type="text"
                     />
                 )}
