@@ -5,7 +5,14 @@ import { cors } from 'hono/cors'
 
 const app = new Hono()
 
-app.use('/*', cors());
+app.use('/*', cors({
+  origin: '*',
+  allowMethods: ['GET', 'POST', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, 
+  maxAge: 600,
+}));
+
 
 app.route('/api/v1/user', userRouter);
 app.route('/api/v1/blog', blogRouter);
